@@ -11,16 +11,16 @@ import (
 
 type App struct {
 	// general
-	app        fyne.App
+	App        fyne.App
 	mainWindow fyne.Window
 	mainMenu   *MainMenu
 
 	// database
-	db *smartbolt.Smartbolt
+	DB *smartbolt.Smartbolt
 
 	// items
-	folders *model.Folders
-	notes   *model.Notes
+	Folders *model.Folders
+	Notes   *model.Notes
 
 	// pages
 	navigationPage *NavigationPage
@@ -35,19 +35,19 @@ type App struct {
 func NewApp(database *smartbolt.Smartbolt) *App {
 	x := &App{}
 
-	x.app = app.New()
-	x.mainWindow = x.app.NewWindow("Note")
+	x.App = app.New()
+	x.mainWindow = x.App.NewWindow("Note")
 	x.mainMenu = NewMainMenu()
-	x.db = database
+	x.DB = database
 
-	x.folders = x.readAllFolders()
-	x.notes = x.readAllNotes()
-	x.navigationPage = NewNavigationPage(x.folders, x.notes)
+	x.Folders = x.readAllFolders()
+	x.Notes = x.readAllNotes()
+	x.navigationPage = NewNavigationPage(x.Folders, x.Notes)
 	x.homePage = NewHomePage()
 	x.previewPage = NewPreviewPage()
-	x.editPage = NewEditPage(*x.folders)
+	x.editPage = NewEditPage(*x.Folders)
 
-	x.foldersWindow = NewFoldersWindow(x.app)
+	x.foldersWindow = NewFoldersWindow(x)
 
 	x.bindHandlers()
 
@@ -66,12 +66,12 @@ func (a *App) SwitchPage(page Page) {
 	a.mainWindow.SetContent(x)
 }
 
-func (a *App) ShowAlert(text string) {
+func (a *App) ShowAlert(window fyne.Window, text string) {
 	label := widget.NewLabel(text)
-	popup := widget.NewPopUp(label, a.mainWindow.Canvas())
+	popup := widget.NewPopUp(label, window.Canvas())
 	popup.Show()
 
-	windowSize := a.mainWindow.Canvas().Size()
+	windowSize := window.Canvas().Size()
 	labelSize := label.Size()
 	popupPos := fyne.NewPos(windowSize.Width/2-labelSize.Width/2, windowSize.Height/2-labelSize.Height/2)
 	popup.Move(popupPos)
@@ -91,7 +91,7 @@ func (a *App) bindHandlers() {
 }
 
 func (a *App) readAllFolders() *model.Folders {
-	fbucket := smartbolt.OpenBucket[int, model.Folder](a.db, "folders")
+	fbucket := smartbolt.OpenBucket[int, model.Folder](a.DB, "folders")
 	folders, _ := fbucket.GetAll()
 	if len(folders) == 0 {
 		generalID := fbucket.NextID()
@@ -102,10 +102,9 @@ func (a *App) readAllFolders() *model.Folders {
 		})
 		return a.readAllFolders()
 	}
-	fders := model.Folders(folders)
-	return &fders
+	return model.NewFoldersFromSlice(folders)
 }
 
 func (a *App) readAllNotes() *model.Notes {
-	return model.NewNotes(a.db)
+	return model.NewNotes(a.DB)
 }

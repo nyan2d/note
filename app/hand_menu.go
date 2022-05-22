@@ -6,7 +6,7 @@ import (
 )
 
 func (a *App) hMenuFileQuit() {
-	a.app.Quit()
+	a.App.Quit()
 }
 
 func (a *App) hMenuEditFolders() {
@@ -15,9 +15,9 @@ func (a *App) hMenuEditFolders() {
 
 func (a *App) hMenuEditRemove() {
 	if a.navigationPage.selectedNoteID > -1 {
-		notes := smartbolt.OpenBucket[int, model.Note](a.db, "notes")
+		notes := smartbolt.OpenBucket[int, model.Note](a.DB, "notes")
 		notes.Delete(a.navigationPage.selectedNoteID)
-        a.navigationPage.NotesList.Refresh()
-        a.SwitchPage(a.homePage)
+		a.navigationPage.NotesList.Refresh()
+		a.SwitchPage(a.homePage)
 	}
 }

@@ -29,7 +29,7 @@ func (n *Notes) RecacheAllItems() {
 	notes, _ := n.notes.GetAll()
 	n.cachedItems = []*Note{}
 	for _, v := range notes {
-        note := v
+		note := v
 		n.cachedItems = append(n.cachedItems, &note)
 	}
 	n.updateFilteredItems()
@@ -46,6 +46,7 @@ func (n *Notes) ApplyFilter(filter string) {
 
 func (n *Notes) RemoveFilter() {
 	n.filter = nil
+	n.updateFilteredItems()
 	n.notifyDataChanged()
 }
 

@@ -1,11 +1,37 @@
 package model
 
-type Folders []Folder
+import (
+	"fyne.io/fyne/v2/data/binding"
+)
 
-func (f Folders) StringSlice() []string {
-	x := make([]string, len(f))
-	for k, v := range f {
-		x[k] = v.Name
+// TODO: wrap datalist
+type Folders struct {
+	binding.DataList
+}
+
+func NewFoldersFromSlice(folders []Folder) *Folders {
+	fd := &Folders{
+		DataList: binding.NewStringList(),
 	}
-	return x
+
+	for _, v := range folders {
+		fd.DataList.(binding.StringList).Append(v.Name)
+	}
+
+	return fd
+}
+
+func NewFolders() *Folders {
+	return NewFoldersFromSlice([]Folder{})
+}
+
+func (fd *Folders) StringSlice() []string {
+	count := fd.DataList.Length()
+	r := make([]string, count)
+	for i := 0; i < count; i++ {
+		item, _ := fd.DataList.GetItem(i)
+		value, _ := item.(binding.String).Get()
+		r[i] = value
+	}
+	return r
 }

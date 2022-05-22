@@ -19,16 +19,16 @@ func (a *App) hEditpageSave() {
 	folderID := a.editPage.FolderSelect.SelectedIndex() // TODO:
 
 	if strings.TrimSpace(content) == "" {
-		a.ShowAlert("1")
+		a.ShowAlert(a.mainWindow, "1")
 		return
 	}
 
 	if folderID == -1 {
-		a.ShowAlert("2")
+		a.ShowAlert(a.mainWindow, "2")
 		return
 	}
 
-	nbucket := smartbolt.OpenBucket[int, model.Note](a.db, "notes")
+	nbucket := smartbolt.OpenBucket[int, model.Note](a.DB, "notes")
 	note := model.Note{
 		ID:        nbucket.NextID(),
 		Folder:    folderID,
@@ -38,5 +38,5 @@ func (a *App) hEditpageSave() {
 		EditedAt:  time.Now(),
 	}
 	nbucket.Put(note.ID, note)
-    a.notes.Append(note) // TODO: ???
+	a.Notes.Append(note) // TODO: ???
 }

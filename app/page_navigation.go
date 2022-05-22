@@ -22,7 +22,7 @@ type NavigationPage struct {
 func NewNavigationPage(folders *model.Folders, notes *model.Notes) *NavigationPage {
 	x := &NavigationPage{}
 
-    x.selectedNoteID = -1
+	x.selectedNoteID = -1
 	x.SearchEntry = widget.NewEntry()
 	x.SearchEntry.SetPlaceHolder("Type to search")
 	x.FolderSelect = widget.NewSelect(folders.StringSlice(), func(string) {})
