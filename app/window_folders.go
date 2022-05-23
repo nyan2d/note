@@ -1,6 +1,8 @@
 package app
 
 import (
+	"time"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
@@ -9,7 +11,7 @@ import (
 
 type FoldersWindow struct {
 	window       fyne.Window
-	FoldersList  *widget.List
+	FoldersList  *List
 	AddButton    *widget.Button
 	RemoveButton *widget.Button
 	RenameButton *widget.Button
@@ -23,7 +25,13 @@ func NewFoldersWindow(app *App) *FoldersWindow {
 
 	x.window = app.App.NewWindow("Folders")
 
-	x.FoldersList = widget.NewListWithData(
+	// TODO: remove
+	go func() {
+		time.Sleep(3 * time.Second)
+		x.window.Content().Refresh()
+	}()
+
+	x.FoldersList = NewNotAListWithData(
 		app.Folders,
 		func() fyne.CanvasObject {
 			return widget.NewLabel("-")
@@ -40,7 +48,8 @@ func NewFoldersWindow(app *App) *FoldersWindow {
 	x.CloseButton = widget.NewButton("Close", app.hWfoldersClose)
 
 	x.buttons = container.NewGridWithColumns(4, x.AddButton, x.RemoveButton, x.RenameButton, x.CloseButton)
-	x.container = container.NewBorder(nil, x.buttons, nil, nil, x.FoldersList)
+	test := container.NewMax(x.FoldersList)
+	x.container = container.NewBorder(nil, x.buttons, nil, nil, test)
 	x.window.SetContent(x.container)
 
 	return x
