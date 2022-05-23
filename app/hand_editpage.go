@@ -19,12 +19,12 @@ func (a *App) hEditpageSave() {
 	folderID := a.editPage.FolderSelect.SelectedIndex() // TODO:
 
 	if strings.TrimSpace(content) == "" {
-		a.ShowAlert(a.mainWindow, "1")
+		a.ShowAlert(a.mainWindow, "The content of the note cannot be empty")
 		return
 	}
 
 	if folderID == -1 {
-		a.ShowAlert(a.mainWindow, "2")
+		a.ShowAlert(a.mainWindow, "Please select a category")
 		return
 	}
 
